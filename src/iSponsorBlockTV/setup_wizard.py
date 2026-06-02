@@ -1079,9 +1079,7 @@ class SponsorBlockApiUrlManager(Vertical):
     def compose(self) -> ComposeResult:
         yield Label("SponsorBlock API URL", classes="title")
         yield Label(
-            (
-                f"The URL for the SponsorBlock API (default: {SponsorBlock_api})."
-            ),
+            (f"The URL for the SponsorBlock API (default: {SponsorBlock_api})."),
             classes="subtitle",
             id="sponsorblock-api-url-subtitle",
         )
