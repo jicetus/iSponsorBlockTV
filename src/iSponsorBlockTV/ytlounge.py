@@ -7,7 +7,7 @@ import pyytlounge
 from aiohttp import ClientSession
 
 from pyytlounge.event_listener import EventListener
-from pyytlounge.events import NowPlayingEvent, PlaybackStateEvent
+from pyytlounge.events import AutoplayModeChangedEvent, NowPlayingEvent, PlaybackStateEvent
 from pyytlounge.models import State
 from pyytlounge.wrapper import NotLinkedException, api_base, as_aiter, Dict
 from uuid import uuid4
@@ -40,7 +40,7 @@ class _CallbackListener(EventListener):
         # event.enabled: bool - whether autoplay is enabled
         # event.supported: bool - whether autoplay is supported
         if not event.enabled and not event.supported:
-            logger.warning("Autoplay not supported on this device")
+            self._lounge.logger.warning("Autoplay not supported on this device")
 
 class YtLoungeApi(pyytlounge.YtLoungeApi):
     def __init__(
@@ -253,14 +253,13 @@ class YtLoungeApi(pyytlounge.YtLoungeApi):
             elif redirect_setting:
                 # Disable autoplay with redirect (DISABLED mode)
                 create_task(self.set_auto_play_mode(False))
-            # else: Don't call set_auto_play_mode → preserves YouTube's default behavior
-            #       (shows "Next Video" suggestions without redirecting to home)
             else:
-                # When not calling set_auto_play_mode, log for debugging
+                # Don't call set_auto_play_mode → preserves YouTube's default behavior
+                # (shows "Next Video" suggestions without redirecting to home)
                 self.logger.debug(
                     "Not setting autoplay mode to preserve YouTube default behavior "
                     "(redirect_to_home_on_end=False)"
-              )
+                )
 
         elif event_type == "onPlaybackSpeedChanged":
             data = args[0]
