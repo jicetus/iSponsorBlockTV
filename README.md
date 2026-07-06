@@ -65,8 +65,9 @@ iSponsorBlockTV provides two related settings:
 - **auto_play**: When enabled, videos autoplay continuously.
 - **redirect_to_home_on_end**: When enabled and auto_play is disabled, redirects to YouTube homepage after video ends.
 
-<details>
+<!-- markdownlint-disable MD033 -->
 
+<details>
 <summary>Configuration combinations:</summary>
 
 - **`auto_play`: True** - Videos autoplay continuously. `redirect_to_home_on_end` has no effect.
@@ -75,8 +76,9 @@ iSponsorBlockTV provides two related settings:
 
 </details>
 
-> [!NOTE]
-> `redirect_to_home_on_end` only applies when `auto_play` is disabled.
+<!-- markdownlint-enable MD033 -->
+
+> [!NOTE] > `redirect_to_home_on_end` only applies when `auto_play` is disabled.
 
 ## Libraries used
 
