@@ -36,6 +36,11 @@ class _CallbackListener(EventListener):
     async def now_playing_changed(self, event: NowPlayingEvent) -> None:
         await self._lounge._handle_now_playing_event(event)
 
+    async def autoplay_changed(self, event: AutoplayModeChangedEvent) -> None:
+        # event.enabled: bool - whether autoplay is enabled
+        # event.supported: bool - whether autoplay is supported
+        if not event.enabled and not event.supported:
+            logger.warning("Autoplay not supported on this device")
 
 class YtLoungeApi(pyytlounge.YtLoungeApi):
     def __init__(
@@ -71,7 +76,8 @@ class YtLoungeApi(pyytlounge.YtLoungeApi):
             self.mute_ads = config.mute_ads
             self.skip_ads = config.skip_ads
             self.auto_play = config.auto_play
-            self.redirect_to_home_on_end = config.redirect_to_home_on_end
+            # Using getattr for backward compatibility with old configs
+            self.redirect_to_home_on_end = getattr(config, 'redirect_to_home_on_end', True)
         self._command_mutex = asyncio.Lock()
 
     async def _handle_playback_state_event(self, event: PlaybackStateEvent) -> None:
@@ -236,14 +242,25 @@ class YtLoungeApi(pyytlounge.YtLoungeApi):
                 data = args[0]
                 if data["reason"] == "disconnectedByUserScreenInitiated":  # Short playing?
                     self.shorts_disconnected = True
+
         elif event_type == "onAutoplayModeChanged":
+            # Check if we have the redirect_to_home_on_end attribute
+            redirect_setting = getattr(self, 'redirect_to_home_on_end', True)
+
             if self.auto_play:
-                # Always enable autoplay when auto_play is True
+                # Always enable autoplay (ENABLED mode)
                 create_task(self.set_auto_play_mode(True))
-            elif self.redirect_to_home_on_end:
-                # Only disable autoplay (causing redirect) when explicitly requested
+            elif redirect_setting:
+                # Disable autoplay with redirect (DISABLED mode)
                 create_task(self.set_auto_play_mode(False))
-            # else: Don't call set_auto_play_mode, letting YouTube use default behavior
+            # else: Don't call set_auto_play_mode → preserves YouTube's default behavior
+            #       (shows "Next Video" suggestions without redirecting to home)
+            else:
+                # When not calling set_auto_play_mode, log for debugging
+                self.logger.debug(
+                    "Not setting autoplay mode to preserve YouTube default behavior "
+                    "(redirect_to_home_on_end=False)"
+              )
 
         elif event_type == "onPlaybackSpeedChanged":
             data = args[0]

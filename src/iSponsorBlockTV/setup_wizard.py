@@ -1039,7 +1039,7 @@ class AutoPlayManager(Vertical):
                 value=self.config.redirect_to_home_on_end,
                 id="redirect-to-home-switch",
                 label="Redirect to YouTube homepage when video ends",
-                disabled=not not self.config.auto_play,  # Disabled when autoplay=True
+                disabled=self.config.auto_play,  # Disabled when autoplay=True
             )
             yield redirect_checkbox
             yield Label(
