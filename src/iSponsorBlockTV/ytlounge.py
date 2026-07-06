@@ -42,6 +42,7 @@ class _CallbackListener(EventListener):
         if not event.enabled and not event.supported:
             self._lounge.logger.warning("Autoplay not supported on this device")
 
+
 class YtLoungeApi(pyytlounge.YtLoungeApi):
     def __init__(
         self,
@@ -77,7 +78,7 @@ class YtLoungeApi(pyytlounge.YtLoungeApi):
             self.skip_ads = config.skip_ads
             self.auto_play = config.auto_play
             # Using getattr for backward compatibility with old configs
-            self.redirect_to_home_on_end = getattr(config, 'redirect_to_home_on_end', True)
+            self.redirect_to_home_on_end = getattr(config, "redirect_to_home_on_end", True)
         self._command_mutex = asyncio.Lock()
 
     async def _handle_playback_state_event(self, event: PlaybackStateEvent) -> None:
@@ -245,7 +246,7 @@ class YtLoungeApi(pyytlounge.YtLoungeApi):
 
         elif event_type == "onAutoplayModeChanged":
             # Check if we have the redirect_to_home_on_end attribute
-            redirect_setting = getattr(self, 'redirect_to_home_on_end', True)
+            redirect_setting = getattr(self, "redirect_to_home_on_end", True)
 
             if self.auto_play:
                 # Always enable autoplay (ENABLED mode)
