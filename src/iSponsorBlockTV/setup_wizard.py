@@ -1013,7 +1013,7 @@ class ChannelWhitelistManager(Vertical):
 
 
 class AutoPlayManager(Vertical):
-    """Manager for autoplay, allows enabling/disabling autoplay."""
+    """Manager for autoplay and redirect behavior settings."""
 
     def __init__(self, config, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -1022,7 +1022,7 @@ class AutoPlayManager(Vertical):
     def compose(self) -> ComposeResult:
         yield Label("Autoplay", classes="title")
         yield Label(
-            "This feature allows you to enable/disable autoplay",
+            "Control autoplay behavior and video end actions",
             classes="subtitle",
             id="autoplay-subtitle",
         )
@@ -1032,10 +1032,32 @@ class AutoPlayManager(Vertical):
                 id="autoplay-switch",
                 label="Enable autoplay",
             )
+        with Horizontal(id="redirect-container"):
+            # Disable redirect checkbox when autoplay is enabled
+            # (redirect only applies when autoplay is off)
+            redirect_checkbox = Checkbox(
+                value=self.config.redirect_to_home_on_end,
+                id="redirect-to-home-switch",
+                label="Redirect to YouTube homepage when video ends",
+                disabled=not not self.config.auto_play,  # Disabled when autoplay=True
+            )
+            yield redirect_checkbox
+            yield Label(
+                "(Only applies when autoplay is disabled)",
+                classes="hint",
+                id="redirect-hint",
+            )
 
     @on(Checkbox.Changed, "#autoplay-switch")
-    def changed_skip(self, event: Checkbox.Changed):
+    def changed_autoplay(self, event: Checkbox.Changed):
         self.config.auto_play = event.checkbox.value
+        # Update redirect checkbox disabled state
+        self.query_one("#redirect-to-home-switch", Checkbox).disabled = self.config.auto_play
+        self.query_one("#redirect-hint", Label).update("(Only applies when autoplay is disabled)")
+
+    @on(Checkbox.Changed, "#redirect-to-home-switch")
+    def changed_redirect_to_home(self, event: Checkbox.Changed):
+        self.config.redirect_to_home_on_end = event.checkbox.value
 
 
 class UseProxyManager(Vertical):

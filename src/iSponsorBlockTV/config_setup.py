@@ -38,6 +38,7 @@ MUTE_ADS_PROMPT = "Do you want to mute native YouTube ads automatically? (y/N) "
 SKIP_ADS_PROMPT = "Do you want to skip native YouTube ads automatically? (y/N) "
 AUTOPLAY_PROMPT = "Do you want to enable autoplay? (Y/n) "
 ENTER_SPONSORBLOCK_API_PROMPT = f"Enter SponsorBlock API URL (default: {SponsorBlock_api}): "
+REDIRECT_TO_HOME_PROMPT = "When autoplay is off, redirect to YouTube homepage on video end? (Y/n) "
 
 
 def get_yn_input(prompt):
@@ -212,6 +213,13 @@ def main(config, debug: bool) -> None:
     # SponsorBlock API URL
     api_url = input(ENTER_SPONSORBLOCK_API_PROMPT).strip()
     config.sponsorblock_api_url = api_url if api_url else SponsorBlock_api
+
+    if not config.auto_play:
+        choice = get_yn_input(REDIRECT_TO_HOME_PROMPT)
+        config.redirect_to_home_on_end = choice != "n"
+    else:
+        # When autoplay is on, redirect setting doesn't apply
+        config.redirect_to_home_on_end = True  # Default, but unused
 
     print("Config finished")
     config.save()

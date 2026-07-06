@@ -64,12 +64,14 @@ class YtLoungeApi(pyytlounge.YtLoungeApi):
         self.logger = logger
         self.shorts_disconnected = False
         self.auto_play = True
+        self.redirect_to_home_on_end = True
         self.watchdog_running = False
         self.last_event_time = 0
         if config:
             self.mute_ads = config.mute_ads
             self.skip_ads = config.skip_ads
             self.auto_play = config.auto_play
+            self.redirect_to_home_on_end = config.redirect_to_home_on_end
         self._command_mutex = asyncio.Lock()
 
     async def _handle_playback_state_event(self, event: PlaybackStateEvent) -> None:
@@ -235,7 +237,13 @@ class YtLoungeApi(pyytlounge.YtLoungeApi):
                 if data["reason"] == "disconnectedByUserScreenInitiated":  # Short playing?
                     self.shorts_disconnected = True
         elif event_type == "onAutoplayModeChanged":
-            create_task(self.set_auto_play_mode(self.auto_play))
+            if self.auto_play:
+                # Always enable autoplay when auto_play is True
+                create_task(self.set_auto_play_mode(True))
+            elif self.redirect_to_home_on_end:
+                # Only disable autoplay (causing redirect) when explicitly requested
+                create_task(self.set_auto_play_mode(False))
+            # else: Don't call set_auto_play_mode, letting YouTube use default behavior
 
         elif event_type == "onPlaybackSpeedChanged":
             data = args[0]

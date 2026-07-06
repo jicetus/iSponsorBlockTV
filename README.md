@@ -58,6 +58,26 @@ during setup.
 The device can also be manually added to iSponsorBlockTV with a YouTube TV code.
 This code can be found in the settings page of your YouTube TV application.
 
+## Autoplay behavior
+
+iSponsorBlockTV provides two related settings:
+
+- **auto_play**: When enabled, videos autoplay continuously.
+- **redirect_to_home_on_end**: When enabled and auto_play is disabled, redirects to YouTube homepage after video ends.
+
+<details>
+
+<summary>Configuration combinations:</summary>
+
+- **`auto_play`: True** - Videos autoplay continuously. `redirect_to_home_on_end` has no effect.
+- **`auto_play`: False, `redirect_to_home_on_end`: True** - Video ends redirect to YouTube homepage.
+- **`auto_play`: False, `redirect_to_home_on_end`: False** - Video ends show "Next Video" suggestions (default YouTube behavior).
+
+</details>
+
+> [!NOTE]
+> `redirect_to_home_on_end` only applies when `auto_play` is disabled.
+
 ## Libraries used
 
 - [pyytlounge](https://github.com/FabioGNR/pyytlounge) Used to interact with the

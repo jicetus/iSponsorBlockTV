@@ -55,6 +55,8 @@ class Config:
         self.join_name = "iSponsorBlockTV"
         self.use_proxy = False
         self.sponsorblock_api_url = SponsorBlock_api
+        # Initialize with default, will be overridden by config if present
+        self.redirect_to_home_on_end = True
         self.__load()
 
     def validate(self):
@@ -114,6 +116,10 @@ class Config:
                     sys.exit()
             else:
                 print("Blank config file created")
+
+        # Ensure redirect_to_home_on_end exists (backward compatibility)
+        if not hasattr(self, "redirect_to_home_on_end"):
+            self.redirect_to_home_on_end = True
 
     def save(self):
         with open(self.config_file, "w", encoding="utf-8") as f:

@@ -14,6 +14,7 @@
     "skip_ads": true,
     "minimum_skip_length": 1,
     "auto_play": true,
+    "redirect_to_home_on_end": true,
     "join_name": "iSponsorBlockTV",
     "apikey": "",
     "channel_whitelist": [
