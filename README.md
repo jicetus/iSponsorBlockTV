@@ -59,13 +59,13 @@ The device can also be manually added to iSponsorBlockTV with a YouTube TV code.
 This code can be found in the settings page of your YouTube TV application.
 
 ## Autoplay behavior
+<!-- markdownlint-disable MD013 MD033 -->
 
 iSponsorBlockTV provides two related settings:
 
 - **auto_play**: When enabled, videos autoplay continuously.
 - **redirect_to_home_on_end**: When enabled and auto_play is disabled, redirects to YouTube homepage after video ends.
 
-<!-- markdownlint-disable MD013 MD033 -->
 <details>
 <summary>Configuration combinations:</summary>
 
