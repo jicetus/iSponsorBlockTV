@@ -39,8 +39,7 @@ from . import api_helpers
 from .constants import skip_categories, SponsorBlock_api
 
 AUTOPLAY_BLOCK_TOOLTIP = (
-    "Pauses the video the receiver auto-advances to."
-    " Reactive, not guaranteed - try disabled first."
+    "Pauses the video the receiver auto-advances to. Reactive, not guaranteed - try disabled first."
 )
 
 

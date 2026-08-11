@@ -217,8 +217,7 @@ class YtLoungeApi(pyytlounge.YtLoungeApi):
                 # A tighter window already active means state "0" fired
                 # for this video; preserve it instead of loosening to 90s.
                 keep_tighter_window = (
-                    self._current_video_ended
-                    and self._current_video_ended_window == 10
+                    self._current_video_ended and self._current_video_ended_window == 10
                 )
                 if self._current_video_ended:
                     self._current_video_ended_marks += 1
@@ -238,10 +237,7 @@ class YtLoungeApi(pyytlounge.YtLoungeApi):
                 if self.auto_play:
                     pass  # autoplay is enabled, no action needed
                 elif self._current_video_ended:
-                    elapsed = (
-                        asyncio.get_running_loop().time()
-                        - self._current_video_ended_at
-                    )
+                    elapsed = asyncio.get_running_loop().time() - self._current_video_ended_at
                     if elapsed <= self._current_video_ended_window:
                         if self.autoplay_block_action == "pause":
                             self.logger.info(
